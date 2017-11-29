@@ -29,5 +29,5 @@ public:
 	UFUNCTION()
 	void HandleForwardMovement(float Value);
 	UFUNCTION()
-	void HandleHorizontalMovement(float Value)
+	void HandleHorizontalMovement(float Value);
 };

@@ -31,8 +31,33 @@ void AFPSCharacter::Tick(float DeltaTime)
 }
 
 // Called to bind functionality to input
-void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	Super::SetupPlayerInputComponent(InputComponent);
 
+	// Bind input to functions.
+	InputComponent->BindAxis("Forward Movement", this, &AFPSCharacter::HandleForwardMovement);
+}
+
+void AFPSCharacter::HandleForwardMovement(float Value)
+{
+	// Handles moving in the direction of the camera.
+
+	if (Controller != NULL && Value != 0.f)
+	{
+		// Get the forward direction.
+		FRotator Rotation = Controller->GetControlRotation();
+
+		if (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling())
+		{
+			// To my understanding, make camera look horizontal when moving? Or character controller? Kinda lost.
+			Rotation.Pitch = 0.0f;
+		}
+
+		// NOTE TO SELF:
+		// In unreal engine, Z is height, Y is Sideways (you know what I mean), and X is depth.
+
+		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
+		this->AddMovementInput(Direction, Value);
+	}
 }
