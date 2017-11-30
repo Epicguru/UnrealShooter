@@ -11,6 +11,20 @@ AFPSCharacter::AFPSCharacter()
 
 }
 
+// Constructor.
+AFPSCharacter::AFPSCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	// Create a CameraComponent 
+	FPCameraComponent = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("FirstPersonCamera"));
+	FPCameraComponent->AttachTo(GetCapsuleComponent());
+
+	// Position the camera a bit above the eyes
+	FPCameraComponent->RelativeLocation = FVector(0, 0, 50.0f + BaseEyeHeight);
+	// Allow the pawn to control rotation.
+	FPCameraComponent->bUsePawnControlRotation = true;
+}
+
 // Called when the game starts or when spawned
 void AFPSCharacter::BeginPlay()
 {
@@ -36,11 +50,18 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 	Super::SetupPlayerInputComponent(InputComponent);
 
 	// Bind input to functions.
+
+	// Movement.
 	InputComponent->BindAxis("Forward Movement", this, &AFPSCharacter::HandleForwardMovement);
 	InputComponent->BindAxis("Horizontal Movement", this, &AFPSCharacter::HandleHorizontalMovement);
 
+	// Mouse look.
 	InputComponent->BindAxis("Horizontal Turn", this, &AFPSCharacter::AddControllerYawInput);
 	InputComponent->BindAxis("Vertical Turn", this, &AFPSCharacter::AddControllerPitchInput);
+
+	// Jumping.
+	InputComponent->BindAction("Jump", IE_Pressed, this, &AFPSCharacter::OnJumpDown);
+	InputComponent->BindAction("Jump", IE_Released, this, &AFPSCharacter::OnJumpUp);
 }
 
 void AFPSCharacter::HandleForwardMovement(float Value)
@@ -77,6 +98,20 @@ void AFPSCharacter::HandleHorizontalMovement(float Value)
 		// Get the forward direction.
 		FRotator Rotation = Controller->GetControlRotation();
 		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
-		this->AddMovementInput(Direction, Value);
+		AddMovementInput(Direction, Value);
 	}
+}
+
+void AFPSCharacter::OnJumpDown()
+{
+	// Called when jump button pressed.
+
+	bPressedJump = true;
+}
+
+void AFPSCharacter::OnJumpUp() 
+{
+	// Called when jump button released.
+
+	bPressedJump = false;
 }

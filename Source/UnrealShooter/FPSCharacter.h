@@ -12,8 +12,20 @@ class UNREALSHOOTER_API AFPSCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
+	// First Person Camera
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+	class UCameraComponent* FPCameraComponent;
+
+	// First Person Mesh (arms)
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	class USkeletalMeshComponent* FirstPersonMesh;
+
+public:
 	// Sets default values for this character's properties
 	AFPSCharacter();
+
+	// Constructor for AFPSCharacter
+	AFPSCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,4 +42,11 @@ public:
 	void HandleForwardMovement(float Value);
 	UFUNCTION()
 	void HandleHorizontalMovement(float Value);
+
+	UFUNCTION()
+	void OnJumpDown();
+
+	UFUNCTION()
+	void OnJumpUp();
+
 };

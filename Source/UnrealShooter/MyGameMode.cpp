@@ -2,12 +2,16 @@
 
 #include "MyGameMode.h"
 #include "Engine.h"
-#include "FPSCharacter.h"
 
 AMyGameMode::AMyGameMode(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	DefaultPawnClass = AFPSCharacter::StaticClass();
+	static ConstructorHelpers::FClassFinder<APawn>FoundPawn(TEXT("Pawn'/Game/Blueprints/BP_FPSCharacter.BP_FPSCharacter_C'"));
+
+	if (FoundPawn.Class != NULL)
+	{
+		DefaultPawnClass = FoundPawn.Class;
+	}
 }
 
 void AMyGameMode::StartPlay()
