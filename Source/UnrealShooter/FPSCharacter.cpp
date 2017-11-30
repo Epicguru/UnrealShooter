@@ -38,13 +38,16 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* InputComponent)
 	// Bind input to functions.
 	InputComponent->BindAxis("Forward Movement", this, &AFPSCharacter::HandleForwardMovement);
 	InputComponent->BindAxis("Horizontal Movement", this, &AFPSCharacter::HandleHorizontalMovement);
+
+	InputComponent->BindAxis("Horizontal Turn", this, &AFPSCharacter::AddControllerYawInput);
+	InputComponent->BindAxis("Vertical Turn", this, &AFPSCharacter::AddControllerPitchInput);
 }
 
 void AFPSCharacter::HandleForwardMovement(float Value)
 {
 	// Handles moving in the direction of the camera.
 
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Magenta, TEXT("Forward movement is: %s", Value));
+	//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Magenta, TEXT("Forward movement is: %s"));
 
 	if (Controller != NULL && Value != 0.f)
 	{
